@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container on the agent, expose necessary ports
-                    sh 'docker run -d -p 9090:80 --name my_app_container $DOCKER_HUB_REPO:$IMAGE_TAG'
+                    sh 'docker run -d -p 9090:9090 --name my_app_container $DOCKER_HUB_REPO:$IMAGE_TAG'
                 }
             }
         }
