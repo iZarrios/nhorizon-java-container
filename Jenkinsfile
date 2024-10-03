@@ -5,7 +5,7 @@ pipeline {
         DOCKER_HUB_REPO = 'zarrios/nh-final-project-1'
         IMAGE_TAG = "v1.0"
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'  // Jenkins credentials ID for Docker Hub
-        DOCKER_CREDENTIALS = credentials('docker stuff stuff')
+        DOCKER_CREDENTIALS = credentials('123')
     }
 
     stages {
