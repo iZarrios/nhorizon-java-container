@@ -54,7 +54,7 @@ pipeline {
                 script {
                     // Check if the website is accessible using curl
                     sh 'sleep 10' // Give some time for the container to be up and running
-                    def response = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:8080', returnStdout: true).trim()
+                    def response = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:9090', returnStdout: true).trim()
                     if (response != "200") {
                         error("Website is not accessible. Curl returned HTTP status: ${response}")
                     } else {
