@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_REPO = 'your-dockerhub-username/your-app-repo' // Replace with your Docker Hub repo
-        IMAGE_TAG = "latest"  // You can make this dynamic, e.g., "${env.BUILD_ID}"
+        DOCKER_HUB_REPO = 'zarrios/nh-final-project-1'
+        IMAGE_TAG = "v1.0"
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'  // Jenkins credentials ID for Docker Hub
     }
 
