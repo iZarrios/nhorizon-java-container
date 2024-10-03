@@ -5,6 +5,7 @@ pipeline {
         DOCKER_HUB_REPO = 'zarrios/nh-final-project-1'
         IMAGE_TAG = "v1.0"
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'  // Jenkins credentials ID for Docker Hub
+        DOCKER_CREDENTIALS = credentials('docker stuff stuff')
     }
 
     stages {
@@ -22,8 +23,8 @@ pipeline {
             steps {
                 script {
                     // Log in to Docker Hub and push the image
-                    withCredentials([usernamePassword(credentialsId: "$DOCKER_CREDENTIALS_ID", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                    withCredentials([usernamePassword(credentialsId: "$DOCKER_CREDENTIALS_ID", passwordVariable: "$DOCKER_CREDENTIALS_PSW", usernameVariable: "$DOCKER_CREDENTIALS_USR")]) {
+                        sh 'echo $DOCKER_CREDENTIALS_PSW | docker login -u $DOCKER_CREDENTIALS_USR --password-stdin'
                         sh 'docker push $DOCKER_HUB_REPO:$IMAGE_TAG'
                     }
                 }
@@ -37,13 +38,13 @@ pipeline {
                     sh 'docker pull $DOCKER_HUB_REPO:$IMAGE_TAG'
                 }
             }
-        }
+            }
 
         stage('Run the Image') {
             steps {
                 script {
                     // Run the Docker container on the agent, expose necessary ports
-                    sh 'docker run -d -p 8080:80 --name my_app_container $DOCKER_HUB_REPO:$IMAGE_TAG'
+                    sh 'docker run -d -p 9090:80 --name my_app_container $DOCKER_HUB_REPO:$IMAGE_TAG'
                 }
             }
         }
