@@ -8,7 +8,7 @@ node app.js
 docker build . -t name:tag
 ```
 
-## Pushgin Docker image to Docker Hub
+## Pushing Docker image to Docker Hub
 ```bash
 docker push name:tag
 ```
@@ -27,7 +27,7 @@ Docs:
     - I had to log in to Docker Hub in the terminal
 - Added template Jenkinsfile to the repository
 - I added Jenkins to Docker group because I was getting permission denied error when trying to run the Jenkins container because it was trying to access the Docker socket
-- Tried running the the Jenkins container with the Docker socket mounted and it worked after adding Jenkins to Docker group
+- Tried running the Jenkins container with the Docker socket mounted and it worked after adding Jenkins to Docker group
 - Created a new pipeline in Jenkins and configured it to use the Jenkinsfile in the repository
 - Ran the pipeline and I had some problems with the Docker image not being able to be pushed to Docker Hub
     - I had to log in to Docker Hub in the Jenkins container
