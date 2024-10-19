@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'remote-node'
+    }
 
     environment {
         DOCKER_HUB_REPO = 'zarrios/nh-final-project-1'
