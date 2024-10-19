@@ -1,24 +1,24 @@
 ## Running the app
 ```bash
-npm install # install dependencies
-node app.js
+$ npm install # install dependencies
+$ node app.js
 ```
 ## Building Docker image
 ```bash
-docker build . -t name:tag
+$ docker build . -t name:tag
 ```
 
 ## Pushing Docker image to Docker Hub
 ```bash
-docker push name:tag
+$ docker push name:tag
 ```
 
 ## Running Docker image
 ```bash
-docker run -p 9090:9090 name:tag
+$ docker run -p 9090:9090 name:tag
 ```
 
-Docs:
+## Docs:
 - Tried to run the app without Docker, but with node.js and npm installed on my machine
 - Modified the home.pug file to include group code as well as my name
 - Tried to run the app with Docker and it didn't work at first
@@ -39,3 +39,74 @@ Docs:
     - I had to change the port in the Jenkinsfile to 9090
 - Ran the pipeline again and it was successful
 
+
+## Adding a remote node to Jenkins
+### 1. Prepare the Remote Machine
+Before configuring the node in Jenkins, ensure the remote machine (where the node will run) is prepared:
+Install Java (Jenkins requires Java to run the agent).
+You can check if Java is installed with java -version. If not, install it:
+```bash
+$ sudo apt-get update
+$ sudo apt-get install openjdk-11-jre # Java 8 or higher is typically required, depending on your Jenkins version.
+```
+Ensure the machine is network-accessible from the Jenkins master (basically make sure you can ping the machine from the Jenkins server).
+
+### 2. Adding a New Node in Jenkins
+
+#### On the Jenkins master, follow these steps:
+
+1. **Go to Manage Jenkins**:
+   From the Jenkins dashboard, click on `Manage Jenkins` from the left-hand menu.
+
+2. **Go to Manage Nodes and Clouds**:
+   Under `Manage Jenkins`, click on `Manage Nodes and Clouds`.
+
+3. **Add a New Node**:
+   Click `New Node` on the left-hand side.
+
+4. **Enter Node Details**:
+   Give your node a name (e.g., `remote-node`).
+
+5. **Select "Permanent Agent"**:
+   If you're setting up a static agent (as opposed to a cloud-based or ephemeral one), select **Permanent Agent** and click `OK`.
+
+6. **Configure the Node**:
+   On the next page, you'll need to fill out the details:
+   - **Description**: A short description of the node (optional).
+   - **# of Executors**: The number of parallel builds the node can handle (usually 1).
+   - **Remote root directory**: The directory on the remote machine where the Jenkins agent will be installed and work (e.g., `$HOME`).
+   - **Labels**: Add a label (e.g., `remote-node`) for identifying this node in your pipeline.
+   - **Launch method**: Choose one of the following methods to launch the agent:
+     - **Launch agents via SSH**: Provide SSH credentials to connect the agent to the remote machine.
+     - **Launch agents via Java Web Start** **_(not needed in our case)_**: Manually start the agent from the remote machine using a `.jnlp` file.
+
+### 3. Configure SSH for Agent (if using SSH launch method)
+
+If you selected **Launch agent via SSH**, follow these steps to set up SSH access:
+
+1. **Configure SSH Key**:
+   You’ll need to configure SSH access from Jenkins to the remote machine. Use an SSH key pair (passwordless login) for this.
+
+   To generate an SSH key (if you don't have one), run the following command on the Jenkins master machine:
+
+   ```bash
+   $ ssh-keygen -t rsa -b 2048
+   ```
+2. **Copy the Public Key**:
+   Copy the public key to the remote machine. You can do this manually or use `ssh-copy-id`:
+
+   ```bash
+    $ ssh-copy-id jenkins@<remote-node-ip>
+   ```
+   Replace <remote-node-ip> with the actual IP address or hostname of the remote machine.
+3. **Add SSH Credentials to Jenkins**:
+   In Jenkins, go to `Manage Jenkins` > `Manage Credentials` > `Jenkins` > `Global credentials (unrestricted)` > `Add Credentials`.
+
+   Choose `SSH Username with private key` as the kind of credentials and fill in the details:
+   - **Username**: The username for the remote machine (e.g., `jenkins`).
+   - **Private Key**: Enter directly or select the private key file.
+   - **Passphrase**: If your SSH key has a passphrase, enter it here.
+4. **Start the Agent**:
+   Once you've configured the node in Jenkins and set up SSH access, you can start the agent by clicking on the node and selecting `Launch agent`.
+5. **Verify Connection**:
+   After launching the agent, Jenkins will attempt to connect to the remote machine. You can check the status and logs to verify the connection.
